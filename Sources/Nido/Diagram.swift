@@ -11,8 +11,9 @@ public struct GraphNode: Codable, Equatable, Sendable {
 public struct InfrastructureGraph: Codable, Equatable, Sendable {
     public let name: String
     public let nodes: [GraphNode]
+    public var architecture: Architecture? = nil
 
-    public func render(_ format: DiagramFormat) throws -> String {
+    public func render(_ format: DiagramFormat, view: DiagramView = .architecture) throws -> String {
         // Graph JSON may come from an external file. Validate it before indexing or recursive layout.
         let ids = Set(nodes.map(\.id))
         guard ids.count == nodes.count else { throw NidoError("Graph contains duplicate node IDs") }
@@ -27,6 +28,9 @@ public struct InfrastructureGraph: Codable, Equatable, Sendable {
             active.remove(id); visited.insert(id)
         }
         for node in nodes { try visit(node.id) }
+        let scene = architecture ?? Architecture.inferred(nodes)
+        try scene.validate(resourceIDs: Set(nodes.filter { $0.kind == "resource" || $0.kind == "module" }.map(\.id)))
+        if view == .architecture { return scene.render(format, name: name) }
         switch format {
         case .mermaid: return mermaid()
         case .dot: return dot()
@@ -138,3 +142,5 @@ public struct InfrastructureGraph: Codable, Equatable, Sendable {
 }
 
 public enum DiagramFormat: String, Sendable { case mermaid, dot, svg }
+
+public enum DiagramView: String, Sendable { case architecture, dependencies }

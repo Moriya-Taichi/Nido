@@ -29,6 +29,7 @@ jobs:
       - run: swift test --jobs 2
       - run: python3 Scripts/test_compile_failures.py
       - run: python3 Scripts/test_schema.py
+      - run: python3 Scripts/test_diagrams.py
       - run: python3 Scripts/test_e2e.py
       - name: AWS schema compatibility (no cloud resources)
         if: runner.os == 'Linux'

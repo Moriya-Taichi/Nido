@@ -133,13 +133,57 @@ nido diagram --format svg --output architecture.svg
 nido diagram --from .nido/nido.graph.json --format svg --output architecture.svg
 ```
 
-SVGの生成にはGraphvizやブラウザーを必要としません。参照値と明示的な`dependsOn`から依存関係を抽出し、
-依存先から利用側へ矢印を描きます。ノードID・種類・参照関係を出力し、設定値は含めません。
+SVGはサービスアイコンとクラウド・リージョン・VPC・AZなどの境界を持つ構成図です。
+Graphvizやブラウザーは不要で、アイコンを含むSVG単体で表示できます。
+アイコンはNido独自の図形です（AWS公式アイコンではありません）。
 
-![AWS example](Docs/aws-architecture.svg)
+`Stack`の`architecture:`に表示内容を指定します。`resource:`には実際のリソースの
+`dependency.address`を渡せます。存在しない参照や、境界の循環・重複を生成時に検証します。
 
-構成図はコードに宣言された構成を表します。外部Terraformモジュールの内部、`count`／`for_each`で
-実行時に展開される個別インスタンス、実際のネットワーク疎通を表すものではありません。
+```swift
+let architecture = Architecture(
+    groups: [
+        .init("cloud", label: "AWS Cloud", kind: .cloud),
+        .init("vpc", label: "Application VPC", kind: .vpc, parent: "cloud"),
+        .init("subnet", label: "Private subnet", kind: .subnet, parent: "vpc"),
+    ],
+    services: [
+        .init("app", label: "Amazon EC2", icon: .compute, parent: "subnet",
+              resource: server.dependency.address, detail: "Application"),
+    ]
+)
+// Stack("Application", architecture: architecture) { ... }
+```
+
+`DiagramConnection("client", "app", label: "HTTPS")`で通信、
+`DiagramConnection("primary", "replica", kind: .replication)`で破線・双方向の同期を指定します。
+接続先は`services`のIDです。通信の循環は許可され、Terraformの作成依存関係の循環は従来どおり拒否されます。
+同じ親の要素は`row`の昇順に配置され、同じ行ではID順に横に並びます。
+MermaidとDOTでも境界と接続を出力しますが、内蔵アイコンと行指定のレイアウトはSVG用です。
+
+![Multi-region architecture](Docs/multi-region-architecture.svg)
+
+この図は[Swiftサンプル](Examples/Architecture/main.swift)から生成した設計例です。
+AWSリソースの作成は行わない概念図で、実リソースを定義する場合は`resource:`で対応付けます。
+
+```sh
+swift run nido-architecture-example --nido-output .nido-architecture
+swift run nido diagram --from .nido-architecture/nido.graph.json --format svg --output architecture.svg
+```
+
+[AWSサンプル](Examples/AWS/main.swift)は実際に宣言したEC2、VPC、Subnetを図示します。
+`architecture:`を省略するとリソースとモジュールの一覧をアイコン付きで表示し、AWSリソースを
+AWS Cloudで囲みます。リージョンや通信経路は自動推測しません。
+
+従来の作成依存関係図も利用できます。
+
+```sh
+nido diagram --view dependencies --format svg --output dependencies.svg
+```
+
+図は宣言した内容を表し、実際の疎通、外部モジュール内部、`count`／`for_each`の実行時の
+個別インスタンスは表しません。設定値は自動転記しませんが、図のラベルや注釈は公開されるため秘密値を入れないでください。
+大規模な図では`row`で配置を調整するか、DOTをGraphvizで配置してください。
 
 ## プロバイダースキーマからSwiftの型を生成する
 

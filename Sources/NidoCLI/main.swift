@@ -57,7 +57,7 @@ Options (before the command):
 Commands:
   new PATH [--local-package PATH]   Create an infrastructure Swift package
   synth                            Compile Swift, validate, and emit .tf.json and graph JSON
-  diagram [--format mermaid|dot|svg] [--output PATH] [--from GRAPH.json]
+  diagram [--view architecture|dependencies] [--format mermaid|dot|svg] [--output PATH] [--from GRAPH.json]
   provider generate --schema PATH --provider-version CONSTRAINT
       [--provider SOURCE] [--prefix NAME] [--type NAME ...] [--output PATH]
   init | validate | plan | apply | destroy | import | refresh
@@ -215,10 +215,14 @@ private func main() throws {
         print(directory.path); return
     }
     if command == "diagram" {
+        var view = DiagramView.architecture
         var format = DiagramFormat.mermaid, output: String?, input: String?
         while !args.isEmpty {
             let arg = args.removeFirst()
             switch arg {
+            case "--view":
+                guard let v = DiagramView(rawValue: try take(&args, arg)) else { throw NidoError("Expected architecture or dependencies") }
+                view = v
             case "--format":
                 guard let f = DiagramFormat(rawValue: try take(&args, arg)) else { throw NidoError("Expected mermaid, dot, or svg") }
                 format = f
@@ -230,7 +234,7 @@ private func main() throws {
         func render() throws -> String {
             if input == nil && !skipSynthesis { try synthesize() }
             let graphURL = input.map { URL(fileURLWithPath: $0) } ?? directory.appendingPathComponent("nido.graph.json")
-            return try JSONDecoder().decode(InfrastructureGraph.self, from: Data(contentsOf: graphURL)).render(format)
+            return try JSONDecoder().decode(InfrastructureGraph.self, from: Data(contentsOf: graphURL)).render(format, view: view)
         }
         let rendered = try input == nil ? withWorkingDirectoryLock(directory, create: !skipSynthesis) { try render() } : render()
         if let output { try AtomicFile.write(Data(rendered.utf8), to: URL(fileURLWithPath: output)) }
