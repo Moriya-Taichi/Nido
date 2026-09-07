@@ -54,8 +54,10 @@ with tempfile.TemporaryDirectory(prefix="nido-e2e-") as scratch:
     for format, extension in [("mermaid", "mmd"), ("dot", "dot"), ("svg", "svg")]:
         path = scratch / ("architecture." + extension)
         run(cli + ["diagram", "--format", format, "--output", str(path)], project)
-        assert path.stat().st_size > 80
-        assert "Hello from Nido" not in path.read_text()
+        diagram = path.read_text()
+        assert "greeting" in diagram, "The declared resource must appear in the diagram"
+        assert diagram.startswith({"mermaid": "flowchart", "dot": "digraph", "svg": "<svg"}[format])
+        assert "Hello from Nido" not in diagram
         if format == "svg":
             ET.parse(path)
 
