@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1568" height="1568" viewBox="0 0 1568 1568" role="img" aria-labelledby="title desc">
+<title id="title">Multi-region web service · conceptual</title><desc id="desc">Architecture. Solid arrows show declared traffic; dashed double arrows show replication. Symbols are Nido icons, not official provider artwork.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#526477"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="system-ui,sans-serif" fill="#243247"><text x="32" y="40" font-size="24">Multi-region web service · conceptual</text><text x="32" y="65" font-size="12">Architecture · → Traffic · ↔ Replication (dashed)</text>
+<rect x="32" y="344" width="1504" height="1152" rx="8" fill="#ffffff" stroke="#8799ad"/><text x="48" y="372" font-size="15">AWS Cloud</text>
+<rect x="64" y="616" width="696" height="848" rx="8" fill="#f8fafc" stroke="#8799ad"/><text x="80" y="644" font-size="15">US West · Oregon</text>
+<rect x="96" y="888" width="632" height="544" rx="8" fill="#f8fafc" stroke="#8799ad"/><text x="112" y="916" font-size="15">Application VPC</text>
+<rect x="128" y="944" width="260" height="456" rx="8" fill="#f8fafc" stroke="#8799ad" stroke-dasharray="8 5"/><text x="144" y="972" font-size="15">Availability Zone A</text>
+<rect x="436" y="944" width="260" height="456" rx="8" fill="#f8fafc" stroke="#8799ad" stroke-dasharray="8 5"/><text x="452" y="972" font-size="15">Availability Zone B</text>
+<rect x="808" y="616" width="696" height="848" rx="8" fill="#f8fafc" stroke="#8799ad"/><text x="824" y="644" font-size="15">Asia Pacific · Tokyo</text>
+<rect x="840" y="888" width="632" height="544" rx="8" fill="#f8fafc" stroke="#8799ad"/><text x="856" y="916" font-size="15">Application VPC</text>
+<rect x="872" y="944" width="260" height="456" rx="8" fill="#f8fafc" stroke="#8799ad" stroke-dasharray="8 5"/><text x="888" y="972" font-size="15">Availability Zone A</text>
+<rect x="1180" y="944" width="260" height="456" rx="8" fill="#f8fafc" stroke="#8799ad" stroke-dasharray="8 5"/><text x="1196" y="972" font-size="15">Availability Zone B</text>
+<path d="M784 280V340H784V400" fill="none" stroke="#526477" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="761" y="320" width="47" height="17" rx="3" fill="white"/><text x="784" y="332" text-anchor="middle" font-size="11">HTTPS</text>
+<path d="M784 552V618H1156V672" fill="none" stroke="#526477" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M1156 824V924H1002V1000" fill="none" stroke="#526477" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M1002 1152V1184H1002V1216" fill="none" stroke="#526477" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="986" y="1164" width="33" height="17" rx="3" fill="white"/><text x="1002" y="1176" text-anchor="middle" font-size="11">SQL</text>
+<path d="M1156 824V918H1310V1000" fill="none" stroke="#526477" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M1310 1152V1196H1310V1216" fill="none" stroke="#526477" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="1294" y="1176" width="33" height="17" rx="3" fill="white"/><text x="1310" y="1188" text-anchor="middle" font-size="11">SQL</text>
+<path d="M1100 1266H1156V1266H1212" fill="none" stroke="#526477" stroke-width="1.5" marker-end="url(#arrow)" marker-start="url(#arrow)" stroke-dasharray="6 4"/>
+<path d="M784 552V618H412V672" fill="none" stroke="#526477" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M412 824V924H258V1000" fill="none" stroke="#526477" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M258 1152V1184H258V1216" fill="none" stroke="#526477" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="242" y="1164" width="33" height="17" rx="3" fill="white"/><text x="258" y="1176" text-anchor="middle" font-size="11">SQL</text>
+<path d="M412 824V918H566V1000" fill="none" stroke="#526477" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M566 1152V1196H566V1216" fill="none" stroke="#526477" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="550" y="1176" width="33" height="17" rx="3" fill="white"/><text x="566" y="1188" text-anchor="middle" font-size="11">SQL</text>
+<path d="M356 1266H412V1266H468" fill="none" stroke="#526477" stroke-width="1.5" marker-end="url(#arrow)" marker-start="url(#arrow)" stroke-dasharray="6 4"/>
+<path d="M664 1266H784V1266H904" fill="none" stroke="#526477" stroke-width="1.5" marker-end="url(#arrow)" marker-start="url(#arrow)" stroke-dasharray="6 4"/>
+<rect x="719" y="1244" width="131" height="17" rx="3" fill="white"/><text x="784" y="1256" text-anchor="middle" font-size="11">Cross-region sync</text>
+<g><title>clients</title><g transform="translate(748 138)"><rect width='72' height='72' rx='4' fill='#526477'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><rect x='12' y='14' width='48' height='34' rx='2'/><path d='M36 48v10M22 60h28'/></g></g>
+<text x="784" y="232" text-anchor="middle" font-size="14">Users / Internet</text>
+<text x="784" y="262" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>oregon-a-app</title><g transform="translate(222 1010)"><rect width='72' height='72' rx='4' fill='#ed7d13'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><rect x='19' y='19' width='34' height='34' rx='3'/><path d='M27 10v9M45 10v9M27 53v9M45 53v9M10 27h9M10 45h9M53 27h9M53 45h9'/></g></g>
+<text x="258" y="1104" text-anchor="middle" font-size="14">Application servers</text>
+<text x="258" y="1134" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>oregon-a-db</title><g transform="translate(222 1226)"><rect width='72' height='72' rx='4' fill='#a529c6'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><ellipse cx='36' cy='20' rx='21' ry='8'/><path d='M15 20v32c0 11 42 11 42 0V20M15 36c0 11 42 11 42 0'/></g></g>
+<text x="258" y="1320" text-anchor="middle" font-size="14">Database</text>
+<text x="258" y="1350" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>oregon-b-app</title><g transform="translate(530 1010)"><rect width='72' height='72' rx='4' fill='#ed7d13'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><rect x='19' y='19' width='34' height='34' rx='3'/><path d='M27 10v9M45 10v9M27 53v9M45 53v9M10 27h9M10 45h9M53 27h9M53 45h9'/></g></g>
+<text x="566" y="1104" text-anchor="middle" font-size="14">Application servers</text>
+<text x="566" y="1134" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>oregon-b-db</title><g transform="translate(530 1226)"><rect width='72' height='72' rx='4' fill='#a529c6'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><ellipse cx='36' cy='20' rx='21' ry='8'/><path d='M15 20v32c0 11 42 11 42 0V20M15 36c0 11 42 11 42 0'/></g></g>
+<text x="566" y="1320" text-anchor="middle" font-size="14">Database</text>
+<text x="566" y="1350" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>oregon-lb</title><g transform="translate(376 682)"><rect width='72' height='72' rx='4' fill='#8050d6'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><circle cx='17' cy='36' r='7'/><rect x='48' y='10' width='14' height='14'/><rect x='48' y='48' width='14' height='14'/><path d='M24 36h12V17h12M36 36v19h12'/></g></g>
+<text x="412" y="776" text-anchor="middle" font-size="14">Load balancer</text>
+<text x="412" y="806" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>routing</title><g transform="translate(748 410)"><rect width='72' height='72' rx='4' fill='#8050d6'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><circle cx='36' cy='36' r='25'/><ellipse cx='36' cy='36' rx='12' ry='25'/><path d='M12 29h48M12 43h48'/></g></g>
+<text x="784" y="504" text-anchor="middle" font-size="14">Latency-based routing</text>
+<text x="784" y="534" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>tokyo-a-app</title><g transform="translate(966 1010)"><rect width='72' height='72' rx='4' fill='#ed7d13'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><rect x='19' y='19' width='34' height='34' rx='3'/><path d='M27 10v9M45 10v9M27 53v9M45 53v9M10 27h9M10 45h9M53 27h9M53 45h9'/></g></g>
+<text x="1002" y="1104" text-anchor="middle" font-size="14">Application servers</text>
+<text x="1002" y="1134" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>tokyo-a-db</title><g transform="translate(966 1226)"><rect width='72' height='72' rx='4' fill='#a529c6'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><ellipse cx='36' cy='20' rx='21' ry='8'/><path d='M15 20v32c0 11 42 11 42 0V20M15 36c0 11 42 11 42 0'/></g></g>
+<text x="1002" y="1320" text-anchor="middle" font-size="14">Database</text>
+<text x="1002" y="1350" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>tokyo-b-app</title><g transform="translate(1274 1010)"><rect width='72' height='72' rx='4' fill='#ed7d13'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><rect x='19' y='19' width='34' height='34' rx='3'/><path d='M27 10v9M45 10v9M27 53v9M45 53v9M10 27h9M10 45h9M53 27h9M53 45h9'/></g></g>
+<text x="1310" y="1104" text-anchor="middle" font-size="14">Application servers</text>
+<text x="1310" y="1134" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>tokyo-b-db</title><g transform="translate(1274 1226)"><rect width='72' height='72' rx='4' fill='#a529c6'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><ellipse cx='36' cy='20' rx='21' ry='8'/><path d='M15 20v32c0 11 42 11 42 0V20M15 36c0 11 42 11 42 0'/></g></g>
+<text x="1310" y="1320" text-anchor="middle" font-size="14">Database</text>
+<text x="1310" y="1350" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>tokyo-lb</title><g transform="translate(1120 682)"><rect width='72' height='72' rx='4' fill='#8050d6'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><circle cx='17' cy='36' r='7'/><rect x='48' y='10' width='14' height='14'/><rect x='48' y='48' width='14' height='14'/><path d='M24 36h12V17h12M36 36v19h12'/></g></g>
+<text x="1156" y="776" text-anchor="middle" font-size="14">Load balancer</text>
+<text x="1156" y="806" text-anchor="middle" font-size="11"></text>
+</g>
+</g></svg>

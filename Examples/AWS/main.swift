@@ -12,7 +12,19 @@ let image = AMI("linux", provider: tokyo, architecture: ARM64.self,
 let server = EC2Instance("app", image: image, instanceType: .t4gMicro,
                          subnet: subnet, securityGroups: [security])
 
-try Stack("Private application in Tokyo") {
+let architecture = Architecture(groups: [
+    .init("cloud", label: "AWS Cloud", kind: .cloud),
+    .init("tokyo", label: APNortheast1.name, kind: .region, parent: "cloud"),
+    .init("vpc", label: "Application VPC", kind: .vpc, parent: "tokyo"),
+    .init("subnet", label: "Private subnet", kind: .subnet, parent: "vpc"),
+], services: [
+    .init("server", label: "Amazon EC2", icon: .compute, parent: "subnet",
+          resource: server.dependency.address, detail: "app · ARM64"),
+    .init("security", label: "Security group", icon: .security, parent: "vpc",
+          resource: security.dependency.address, detail: "Private application"),
+])
+
+try Stack("Private application in Tokyo", architecture: architecture) {
     tokyo
     vpc
     subnet

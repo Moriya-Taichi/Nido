@@ -31,10 +31,12 @@ public struct Stack: Component {
     public let requiredVersion: String
     public let imports: [Import]
     public let moves: [Move]
+    public let architecture: Architecture?
 
     public init(_ name: String, backend: Backend? = nil, requiredVersion: String = ">= 1.5.0",
-                imports: [Import] = [], moves: [Move] = [], @StackBuilder content: () -> [Block]) {
+                imports: [Import] = [], moves: [Move] = [], architecture: Architecture? = nil, @StackBuilder content: () -> [Block]) {
         self.name = name; self.backend = backend; self.requiredVersion = requiredVersion
+        self.architecture = architecture
         self.imports = imports; self.moves = moves; blocks = content()
     }
 
@@ -144,10 +146,12 @@ public struct Stack: Component {
 
     public func graph() throws -> InfrastructureGraph {
         try validate()
-        return InfrastructureGraph(name: name, nodes: blocks.map { block in
+        let graph = InfrastructureGraph(name: name, nodes: blocks.map { block in
             GraphNode(id: block.address, kind: block.kind.rawValue, name: block.name,
                       type: block.type, dependencies: block.allDependencies.sorted())
-        }.sorted { $0.id < $1.id })
+        }.sorted { $0.id < $1.id }, architecture: architecture)
+        try architecture?.validate(resourceIDs: Set(blocks.filter { $0.kind == .resource || $0.kind == .module }.map(\.address)))
+        return graph
     }
 
     /// Writes only Nido-owned files; never deletes state, provider locks, or other configuration files.

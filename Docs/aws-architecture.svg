@@ -1,46 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="640" height="800" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
-<title id="title">Private application in Tokyo</title>
-<desc id="desc">Infrastructure dependencies. Arrows point from a dependency to its consumer. Configuration values are omitted.</desc>
-<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#64748b"/></marker></defs>
-<rect width="100%" height="100%" fill="#f8fafc"/>
-<text x="40" y="42" font-family="system-ui,sans-serif" font-size="24" fill="#0f172a">Private application in Tokyo</text>
-<path d="M170,452 C170,486 320,486 320,517" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
-<path d="M470,452 C470,486 320,486 320,517" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
-<path d="M470,308 V328 H626 V500 H320 V517" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
-<path d="M320,164 V184 H626 V500 H320 V517" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
-<path d="M170,308 C170,342 170,342 170,373" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
-<path d="M320,164 V184 H626 V356 H170 V373" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
-<path d="M170,308 C170,342 470,342 470,373" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
-<path d="M320,164 V184 H626 V356 H470 V373" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
-<path d="M320,164 C320,198 170,198 170,229" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
-<path d="M320,164 C320,198 470,198 470,229" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
-<path d="M320,596 C320,630 320,630 320,661" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
-<g><title>aws_instance.app</title><rect x="190" y="520" width="260" height="76" rx="10" fill="white" stroke="#cbd5e1"/>
-<rect x="190" y="534" width="4" height="48" rx="2" fill="#f06445"/>
-<text x="206" y="551" font-family="system-ui,sans-serif" font-size="15" fill="#0f172a">app</text>
-<text x="206" y="574" font-family="system-ui,sans-serif" font-size="12" fill="#475569">aws_instance</text></g>
-<g><title>aws_security_group.app</title><rect x="40" y="376" width="260" height="76" rx="10" fill="white" stroke="#cbd5e1"/>
-<rect x="40" y="390" width="4" height="48" rx="2" fill="#f06445"/>
-<text x="56" y="407" font-family="system-ui,sans-serif" font-size="15" fill="#0f172a">app</text>
-<text x="56" y="430" font-family="system-ui,sans-serif" font-size="12" fill="#475569">aws_security_group</text></g>
-<g><title>aws_subnet.app</title><rect x="340" y="376" width="260" height="76" rx="10" fill="white" stroke="#cbd5e1"/>
-<rect x="340" y="390" width="4" height="48" rx="2" fill="#f06445"/>
-<text x="356" y="407" font-family="system-ui,sans-serif" font-size="15" fill="#0f172a">app</text>
-<text x="356" y="430" font-family="system-ui,sans-serif" font-size="12" fill="#475569">aws_subnet</text></g>
-<g><title>aws_vpc.app</title><rect x="40" y="232" width="260" height="76" rx="10" fill="white" stroke="#cbd5e1"/>
-<rect x="40" y="246" width="4" height="48" rx="2" fill="#f06445"/>
-<text x="56" y="263" font-family="system-ui,sans-serif" font-size="15" fill="#0f172a">app</text>
-<text x="56" y="286" font-family="system-ui,sans-serif" font-size="12" fill="#475569">aws_vpc</text></g>
-<g><title>data.aws_ami.linux</title><rect x="340" y="232" width="260" height="76" rx="10" fill="white" stroke="#cbd5e1"/>
-<rect x="340" y="246" width="4" height="48" rx="2" fill="#f06445"/>
-<text x="356" y="263" font-family="system-ui,sans-serif" font-size="15" fill="#0f172a">linux</text>
-<text x="356" y="286" font-family="system-ui,sans-serif" font-size="12" fill="#475569">aws_ami</text></g>
-<g><title>output.instance_id</title><rect x="190" y="664" width="260" height="76" rx="10" fill="white" stroke="#cbd5e1"/>
-<rect x="190" y="678" width="4" height="48" rx="2" fill="#f06445"/>
-<text x="206" y="695" font-family="system-ui,sans-serif" font-size="15" fill="#0f172a">instance_id</text>
-<text x="206" y="718" font-family="system-ui,sans-serif" font-size="12" fill="#475569">output</text></g>
-<g><title>provider.aws.default</title><rect x="190" y="88" width="260" height="76" rx="10" fill="white" stroke="#cbd5e1"/>
-<rect x="190" y="102" width="4" height="48" rx="2" fill="#f06445"/>
-<text x="206" y="119" font-family="system-ui,sans-serif" font-size="15" fill="#0f172a">default</text>
-<text x="206" y="142" font-family="system-ui,sans-serif" font-size="12" fill="#475569">aws</text></g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="704" viewBox="0 0 760 704" role="img" aria-labelledby="title desc">
+<title id="title">Private application in Tokyo</title><desc id="desc">Architecture. Solid arrows show declared traffic; dashed double arrows show replication. Symbols are Nido icons, not official provider artwork.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#526477"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="system-ui,sans-serif" fill="#243247"><text x="32" y="40" font-size="24">Private application in Tokyo</text><text x="32" y="65" font-size="12">Architecture · → Traffic · ↔ Replication (dashed)</text>
+<rect x="32" y="128" width="696" height="504" rx="8" fill="#ffffff" stroke="#8799ad"/><text x="48" y="156" font-size="15">AWS Cloud</text>
+<rect x="64" y="184" width="632" height="416" rx="8" fill="#f8fafc" stroke="#8799ad"/><text x="80" y="212" font-size="15">ap-northeast-1</text>
+<rect x="96" y="240" width="568" height="328" rx="8" fill="#f8fafc" stroke="#8799ad"/><text x="112" y="268" font-size="15">Application VPC</text>
+<rect x="372" y="296" width="260" height="240" rx="8" fill="#f8fafc" stroke="#8799ad" stroke-dasharray="8 5"/><text x="388" y="324" font-size="15">Private subnet</text>
+<g><title>aws_security_group.app</title><g transform="translate(190 306)"><rect width='72' height='72' rx='4' fill='#dc3456'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><path d='M36 10L58 19v17q0 16-22 27Q14 52 14 36V19ZM25 35l8 8 15-18'/></g></g>
+<text x="226" y="400" text-anchor="middle" font-size="14">Security group</text>
+<text x="226" y="430" text-anchor="middle" font-size="11">Private application</text>
+</g>
+<g><title>aws_instance.app</title><g transform="translate(466 362)"><rect width='72' height='72' rx='4' fill='#ed7d13'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><rect x='19' y='19' width='34' height='34' rx='3'/><path d='M27 10v9M45 10v9M27 53v9M45 53v9M10 27h9M10 45h9M53 27h9M53 45h9'/></g></g>
+<text x="502" y="456" text-anchor="middle" font-size="14">Amazon EC2</text>
+<text x="502" y="486" text-anchor="middle" font-size="11">app · ARM64</text>
+</g>
+</g></svg>
