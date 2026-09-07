@@ -1,0 +1,42 @@
+{
+  "format_version": "1.0",
+  "provider_schemas": {
+    "registry.terraform.io/example/fixture": {
+      "provider": {"block": {"attributes": {"region": {"type": "string", "optional": true}}}},
+      "resource_schemas": {
+        "fixture_server": {
+          "version": 0,
+          "block": {
+            "attributes": {
+              "name": {"type": "string", "required": true},
+              "enabled": {"type": "bool", "optional": true},
+              "replicas": {"type": "number", "optional": true},
+              "id": {"type": "string", "computed": true},
+              "password": {"type": "string", "optional": true, "sensitive": true},
+              "tags": {"type": ["map", "string"], "optional": true},
+              "ports": {"type": ["set", "number"], "optional": true},
+              "settings": {"type": ["object", {"enabled": "bool", "threshold": "number"}], "optional": true},
+              "pair": {"type": ["tuple", ["string", "number"]], "optional": true},
+              "connection": {"type": ["object", {"host": "string", "port": "number"}], "computed": true}
+            },
+            "block_types": {
+              "network": {"nesting_mode": "list", "min_items": 1, "max_items": 1,
+                "block": {"attributes": {"cidr": {"type": "string", "required": true}},
+                  "block_types": {"route": {"nesting_mode": "list", "max_items": 2,
+                    "block": {"attributes": {"target": {"type": "string", "required": true}}}}}}},
+              "rule": {"nesting_mode": "set", "min_items": 1, "max_items": 3,
+                "block": {"attributes": {"port": {"type": "number", "required": true}}}},
+              "label": {"nesting_mode": "map", "block": {"attributes": {"text": {"type": "string", "required": true}}}}
+            }
+          }
+        }
+      },
+      "data_source_schemas": {
+        "fixture_image": {"version": 0, "block": {"attributes": {
+          "name": {"type": "string", "required": true},
+          "id": {"type": "string", "computed": true}
+        }}}
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="800" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+<title id="title">Private application in Tokyo</title>
+<desc id="desc">Infrastructure dependencies. Arrows point from a dependency to its consumer. Configuration values are omitted.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#64748b"/></marker></defs>
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="40" y="42" font-family="system-ui,sans-serif" font-size="24" fill="#0f172a">Private application in Tokyo</text>
+<path d="M170,452 C170,486 320,486 320,517" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M470,452 C470,486 320,486 320,517" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M470,308 V328 H626 V500 H320 V517" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M320,164 V184 H626 V500 H320 V517" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M170,308 C170,342 170,342 170,373" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M320,164 V184 H626 V356 H170 V373" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M170,308 C170,342 470,342 470,373" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M320,164 V184 H626 V356 H470 V373" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M320,164 C320,198 170,198 170,229" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M320,164 C320,198 470,198 470,229" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M320,596 C320,630 320,630 320,661" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<g><title>aws_instance.app</title><rect x="190" y="520" width="260" height="76" rx="10" fill="white" stroke="#cbd5e1"/>
+<rect x="190" y="534" width="4" height="48" rx="2" fill="#f06445"/>
+<text x="206" y="551" font-family="system-ui,sans-serif" font-size="15" fill="#0f172a">app</text>
+<text x="206" y="574" font-family="system-ui,sans-serif" font-size="12" fill="#475569">aws_instance</text></g>
+<g><title>aws_security_group.app</title><rect x="40" y="376" width="260" height="76" rx="10" fill="white" stroke="#cbd5e1"/>
+<rect x="40" y="390" width="4" height="48" rx="2" fill="#f06445"/>
+<text x="56" y="407" font-family="system-ui,sans-serif" font-size="15" fill="#0f172a">app</text>
+<text x="56" y="430" font-family="system-ui,sans-serif" font-size="12" fill="#475569">aws_security_group</text></g>
+<g><title>aws_subnet.app</title><rect x="340" y="376" width="260" height="76" rx="10" fill="white" stroke="#cbd5e1"/>
+<rect x="340" y="390" width="4" height="48" rx="2" fill="#f06445"/>
+<text x="356" y="407" font-family="system-ui,sans-serif" font-size="15" fill="#0f172a">app</text>
+<text x="356" y="430" font-family="system-ui,sans-serif" font-size="12" fill="#475569">aws_subnet</text></g>
+<g><title>aws_vpc.app</title><rect x="40" y="232" width="260" height="76" rx="10" fill="white" stroke="#cbd5e1"/>
+<rect x="40" y="246" width="4" height="48" rx="2" fill="#f06445"/>
+<text x="56" y="263" font-family="system-ui,sans-serif" font-size="15" fill="#0f172a">app</text>
+<text x="56" y="286" font-family="system-ui,sans-serif" font-size="12" fill="#475569">aws_vpc</text></g>
+<g><title>data.aws_ami.linux</title><rect x="340" y="232" width="260" height="76" rx="10" fill="white" stroke="#cbd5e1"/>
+<rect x="340" y="246" width="4" height="48" rx="2" fill="#f06445"/>
+<text x="356" y="263" font-family="system-ui,sans-serif" font-size="15" fill="#0f172a">linux</text>
+<text x="356" y="286" font-family="system-ui,sans-serif" font-size="12" fill="#475569">aws_ami</text></g>
+<g><title>output.instance_id</title><rect x="190" y="664" width="260" height="76" rx="10" fill="white" stroke="#cbd5e1"/>
+<rect x="190" y="678" width="4" height="48" rx="2" fill="#f06445"/>
+<text x="206" y="695" font-family="system-ui,sans-serif" font-size="15" fill="#0f172a">instance_id</text>
+<text x="206" y="718" font-family="system-ui,sans-serif" font-size="12" fill="#475569">output</text></g>
+<g><title>provider.aws.default</title><rect x="190" y="88" width="260" height="76" rx="10" fill="white" stroke="#cbd5e1"/>
+<rect x="190" y="102" width="4" height="48" rx="2" fill="#f06445"/>
+<text x="206" y="119" font-family="system-ui,sans-serif" font-size="15" fill="#0f172a">default</text>
+<text x="206" y="142" font-family="system-ui,sans-serif" font-size="12" fill="#475569">aws</text></g>
+</svg>

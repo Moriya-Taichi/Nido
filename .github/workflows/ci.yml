@@ -1,0 +1,49 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  swift:
+    name: Swift 6 / ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: swift-actions/setup-swift@v2
+        if: runner.os == 'Linux'
+        with:
+          swift-version: '6.0.3'
+      - name: Show Swift version
+        run: swift --version
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.9.8'
+          terraform_wrapper: false
+      - run: swift test --jobs 2
+      - run: python3 Scripts/test_compile_failures.py
+      - run: python3 Scripts/test_schema.py
+      - run: python3 Scripts/test_e2e.py
+      - name: AWS schema compatibility (no cloud resources)
+        if: runner.os == 'Linux'
+        run: python3 Scripts/test_aws_provider.py
+  opentofu:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: '6.0.3'
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: '1.9.0'
+          tofu_wrapper: false
+      - run: python3 Scripts/test_e2e.py
+        env:
+          NIDO_TEST_ENGINE: tofu
