@@ -28,6 +28,29 @@ Terraform／OpenTofuに実行を委譲することで、既存のプロバイダ
 参考：[Swift Generics](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/generics/)、
 [AWS AMI data source](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami)。
 
+## クラウド固有の型
+
+`NidoAzure`の`AzureNetworkInterface<R, S, N>`は地域・サブスクリプション・ネットワークを保持します。
+`AzureLinuxVirtualMachine<R, S, N, A>`には、そのNICとCPUが一致するサイズ・イメージを渡します。
+NSGルールとNICへの関連付けは管理リソースとして生成され、VMの作成前に依存順序で適用されます。
+
+`NidoGoogleCloud`の`GoogleNetwork<P, N>`はプロジェクト単位のグローバルVPCです。
+`GoogleSubnetwork<R, P, N>`でリージョンを追加し、`GoogleComputeInstance<R, P, N, A>`は
+`GoogleZone<R>`を要求します。ゾーン文字列のリージョン部分は構築時にも確認します。
+VMへ渡したFirewallのネットワーク参照を確認し、ターゲットタグと依存関係を自動設定します。
+
+各クラウドに同名の低レベルResourceを統一せず、意味が異なる構成を区別します。
+Azure/GCPのイメージ型は同梱の既知のイメージURN/familyに対応します。実際のイメージ検索・在庫確認は
+行いません。`unchecked`や独自のRegion/CPU型の妥当性は利用側の責任です。
+サイズの地域別提供状況、権限、サービス有効化、SKUの制限、実在するアカウントは実行エンジンとクラウドで検証します。
+専用APIは上記の基礎リソースに限定し、マネージドDB・Kubernetes・IAMなどはスキーマ生成APIで拡張します。
+
+仕様確認元：
+[AzureRM 4.0.0 Linux VM](https://github.com/hashicorp/terraform-provider-azurerm/blob/v4.0.0/website/docs/r/linux_virtual_machine.html.markdown)、
+[Google 6.0.0 Compute Instance](https://github.com/hashicorp/terraform-provider-google/blob/v6.0.0/website/docs/r/compute_instance.html.markdown)、
+[Ubuntu Azureイメージ](https://documentation.ubuntu.com/azure/azure-how-to/instances/find-ubuntu-images/)、
+[Azure Dpsv5](https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/general-purpose/dpsv5-series)。
+
 ## スキーマ生成
 
 `terraform providers schema -json`のformat 1.xを読み、構造的な型と必須属性をSwiftへ変換します。
