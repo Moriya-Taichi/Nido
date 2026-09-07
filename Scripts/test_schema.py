@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Compile generated provider bindings and ensure invalid client code fails."""
 import pathlib
+import platform
 import subprocess
+import sys
 import tempfile
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -24,6 +26,8 @@ let host: Value<String> = server.connection.host
 let output: Value<String> = server.id
 '''
     command = ["swiftc", "-typecheck", "-I", str(bin_dir / "Modules"), str(generated), str(client)]
+    if sys.platform == "darwin":
+        command += ["-target", f"{platform.machine()}-apple-macosx13.0"]
     cases = {
         "valid": valid,
         "missing_required": valid.replace('name: "app", ', ""),
@@ -45,7 +49,7 @@ let output: Value<String> = server.id
     package = temp / "Package.swift"
     package.write_text(f'''// swift-tools-version: 6.0
 import PackageDescription
-let package = Package(name: "SchemaTest", dependencies: [.package(path: "{ROOT}")], targets: [.executableTarget(name: "SchemaTest", dependencies: [.product(name: "Nido", package: "Nido")], path: ".", exclude: ["Package.swift"])])
+let package = Package(name: "SchemaTest", platforms: [.macOS(.v13)], dependencies: [.package(path: "{ROOT}")], targets: [.executableTarget(name: "SchemaTest", dependencies: [.product(name: "Nido", package: "Nido")], path: ".", exclude: ["Package.swift"])])
 ''')
     client.write_text(valid + '\ntry Stack("schema") { provider; server; image; Output("host", value: host) }.export()\n')
     output = temp / "output"

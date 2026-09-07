@@ -3,7 +3,9 @@
 import json
 import os
 import pathlib
+import platform
 import subprocess
+import sys
 import tempfile
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -27,5 +29,8 @@ with tempfile.TemporaryDirectory(prefix="nido-aws-schema-") as scratch:
     for resource in ["aws_vpc", "aws_subnet", "aws_security_group", "aws_ami", "aws_instance", "aws_s3_bucket"]:
         command += ["--type", resource]
     subprocess.run(command, env=env, check=True)
-    subprocess.run(["swiftc", "-typecheck", "-I", str(binary / "Modules"), str(generated)], env=env, check=True)
+    compiler = ["swiftc", "-typecheck", "-I", str(binary / "Modules"), str(generated)]
+    if sys.platform == "darwin":
+        compiler += ["-target", f"{platform.machine()}-apple-macosx13.0"]
+    subprocess.run(compiler, env=env, check=True)
     print("PASS real AWS 6.0.0 provider validation and generated Swift bindings")

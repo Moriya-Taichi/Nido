@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """Test positive and negative programs with the real Swift compiler."""
 import pathlib
+import platform
 import subprocess
+import sys
 import tempfile
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 subprocess.run(["swift", "build", "--jobs", "1"], cwd=ROOT, check=True)
 bin_dir = pathlib.Path(subprocess.check_output(["swift", "build", "--show-bin-path"], cwd=ROOT, text=True).strip())
 command = ["swiftc", "-typecheck", "-I", str(bin_dir / "Modules")]
+if sys.platform == "darwin":
+    command += ["-target", f"{platform.machine()}-apple-macosx13.0"]
 fixtures = ROOT / "Tests" / "CompileFailures"
 valid = (fixtures / "Valid.swift").read_text()
 
