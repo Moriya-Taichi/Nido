@@ -1,0 +1,15 @@
+.build/
+.swiftpm/
+.DS_Store
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+.nido/main.tf.json
+.nido/.nido.lock
+.nido/nido.graph.json
+.nido/*.mmd
+.nido/*.dot
+.nido/*.svg
+# Commit .terraform.lock.hcl, including the one inside .nido/.
