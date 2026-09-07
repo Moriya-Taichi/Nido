@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1324" height="832" viewBox="0 0 1324 832" role="img" aria-labelledby="title desc">
+<title id="title">Nido · AWS / Azure / Google Cloud</title><desc id="desc">Architecture. Solid arrows show declared traffic; dashed double arrows show replication. Symbols are Nido icons, not official provider artwork.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#526477"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="system-ui,sans-serif" fill="#243247"><text x="32" y="40" font-size="24">Nido · AWS / Azure / Google Cloud</text><text x="32" y="65" font-size="12">Architecture · → Traffic · ↔ Replication (dashed)</text>
+<rect x="32" y="128" width="388" height="632" rx="8" fill="#ffffff" stroke="#8799ad"/><text x="48" y="156" font-size="15">AWS Cloud</text>
+<rect x="64" y="184" width="324" height="544" rx="8" fill="#f8fafc" stroke="#8799ad"/><text x="80" y="212" font-size="15">ap-northeast-1</text>
+<rect x="96" y="240" width="260" height="240" rx="8" fill="#f8fafc" stroke="#8799ad"/><text x="112" y="268" font-size="15">Application VPC</text>
+<rect x="468" y="128" width="388" height="632" rx="8" fill="#ffffff" stroke="#8799ad"/><text x="484" y="156" font-size="15">Microsoft Azure</text>
+<rect x="500" y="184" width="324" height="544" rx="8" fill="#f8fafc" stroke="#8799ad"/><text x="516" y="212" font-size="15">japaneast</text>
+<rect x="532" y="240" width="260" height="240" rx="8" fill="#f8fafc" stroke="#8799ad"/><text x="548" y="268" font-size="15">Application VNet</text>
+<rect x="904" y="128" width="388" height="632" rx="8" fill="#ffffff" stroke="#8799ad"/><text x="920" y="156" font-size="15">Google Cloud</text>
+<rect x="936" y="184" width="324" height="544" rx="8" fill="#f8fafc" stroke="#8799ad"/><text x="952" y="212" font-size="15">asia-northeast1</text>
+<rect x="968" y="240" width="260" height="240" rx="8" fill="#f8fafc" stroke="#8799ad" stroke-dasharray="8 5"/><text x="984" y="268" font-size="15">Application subnet</text>
+<g><title>azurerm_storage_container.azure_objects</title><g transform="translate(626 554)"><rect width='72' height='72' rx='4' fill='#0078d4'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><ellipse cx='36' cy='18' rx='23' ry='7'/><path d='M13 18l6 38q17 10 34 0l6-38M25 33q11 15 22 0'/></g></g>
+<text x="662" y="648" text-anchor="middle" font-size="14">Azure Blob Storage</text>
+<text x="662" y="678" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>aws_instance.aws_app</title><g transform="translate(190 306)"><rect width='72' height='72' rx='4' fill='#ed7d13'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><rect x='19' y='19' width='34' height='34' rx='3'/><path d='M27 10v9M45 10v9M27 53v9M45 53v9M10 27h9M10 45h9M53 27h9M53 45h9'/></g></g>
+<text x="226" y="400" text-anchor="middle" font-size="14">Amazon EC2</text>
+<text x="226" y="430" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>google_compute_instance.google_app</title><g transform="translate(1062 306)"><rect width='72' height='72' rx='4' fill='#4285f4'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><rect x='19' y='19' width='34' height='34' rx='3'/><path d='M27 10v9M45 10v9M27 53v9M45 53v9M10 27h9M10 45h9M53 27h9M53 45h9'/></g></g>
+<text x="1098" y="400" text-anchor="middle" font-size="14">Compute Engine</text>
+<text x="1098" y="430" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>google_storage_bucket.google_objects</title><g transform="translate(1062 554)"><rect width='72' height='72' rx='4' fill='#188038'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><ellipse cx='36' cy='18' rx='23' ry='7'/><path d='M13 18l6 38q17 10 34 0l6-38M25 33q11 15 22 0'/></g></g>
+<text x="1098" y="648" text-anchor="middle" font-size="14">Cloud Storage</text>
+<text x="1098" y="678" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>aws_s3_bucket.aws_objects</title><g transform="translate(190 554)"><rect width='72' height='72' rx='4' fill='#719d19'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><ellipse cx='36' cy='18' rx='23' ry='7'/><path d='M13 18l6 38q17 10 34 0l6-38M25 33q11 15 22 0'/></g></g>
+<text x="226" y="648" text-anchor="middle" font-size="14">Amazon S3</text>
+<text x="226" y="678" text-anchor="middle" font-size="11"></text>
+</g>
+<g><title>azurerm_linux_virtual_machine.azure_app</title><g transform="translate(626 306)"><rect width='72' height='72' rx='4' fill='#0078d4'/><g fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><rect x='19' y='19' width='34' height='34' rx='3'/><path d='M27 10v9M45 10v9M27 53v9M45 53v9M10 27h9M10 45h9M53 27h9M53 45h9'/></g></g>
+<text x="662" y="400" text-anchor="middle" font-size="14">Azure Virtual Machine</text>
+<text x="662" y="430" text-anchor="middle" font-size="11"></text>
+</g>
+</g></svg>

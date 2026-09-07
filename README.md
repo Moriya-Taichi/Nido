@@ -1,7 +1,7 @@
 # Nido
 
 Swiftでインフラを定義し、型の不整合をコンパイル時に検出するIaCツールです。
-同じコードからTerraformの設定とインフラ構成図を生成します。
+同じコードからTerraformの設定とインフラ構成図を生成します。AWS・Azure・Google Cloudの型付きAPIを同梱し、同じStackで利用できます。
 
 ```swift
 let image = AMI("linux", provider: tokyo, architecture: ARM64.self,
@@ -77,6 +77,8 @@ try Stack("Application") {
 |---|---|
 | Swiftのコンパイル | 必須引数の省略、値の型、生成APIのcomputed属性への入力、構造化オブジェクトのフィールド、必須の非空コレクション |
 | Swiftのコンパイル：`NidoAWS` | リソースの種類、リージョン、VPCのスコープ、AMIとインスタンスのCPUアーキテクチャ |
+| Swiftのコンパイル：`NidoAzure` | サブスクリプション、リージョン、VNetスコープ、VMサイズとイメージのCPU、必須のSSH公開鍵 |
+| Swiftのコンパイル：`NidoGoogleCloud` | プロジェクト、VPCスコープ、サブネットとゾーンのリージョン、VMとイメージのCPU |
 | 構成生成前の検証 | 重複した宣言、未登録の参照先、循環参照、プロバイダーのバージョン競合、CIDRの範囲、ブロックの個数制約 |
 | Terraformのvalidate／plan／apply | プロバイダー独自の制約、実在するリソース、権限、クォータ、在庫、他の構成との競合、実際のクラウド状態 |
 
@@ -121,6 +123,75 @@ AMIはアーキテクチャのEC2フィルターを付けて検索します。�
 同梱しているAWS APIはVPC、Subnet、SecurityGroup、AMI、EC2Instance、S3Bucketです。
 この例はプライベートネットワークです。インターネット経路やSSHアクセスは設定していません。
 リージョンは`AWSRegion`を実装して追加できます。別アカウントを表す型は現時点では提供していません。
+
+## マルチクラウド
+
+必要なクラウドのSwiftPM productをインフラ定義ターゲットに追加します。
+各モジュールは`Nido`のみに依存するため、AWSを使わないプロジェクトに`NidoAWS`は不要です。
+
+| Product | 型付きAPI | プロバイダー制約（既定） |
+|---|---|---|
+| `NidoAWS` | VPC・Subnet・SecurityGroup・AMI・EC2・S3 | `hashicorp/aws ~> 6.0` |
+| `NidoAzure` | ResourceGroup・VNet・Subnet・NSGとルール・NICとNSG関連付け・Linux VM・StorageAccount・BlobContainer | `hashicorp/azurerm ~> 4.0` |
+| `NidoGoogleCloud` | VPC・Subnetwork・Ingress Firewall・Compute Engine・Storage Bucket | `hashicorp/google ~> 6.0` |
+
+AzureのサブスクリプションとGoogle Cloudのプロジェクトには、別々のスコープ型を宣言します。
+クラウド固有の引数と参照型を保つため、AzureのサブネットをCompute Engineに渡すことはできません。
+CIDR、ポート範囲、ネットワークスコープ、CPU型は`Nido`で共有します。従来の`NidoAWS`名でも参照できます。
+
+```swift
+import Nido
+import NidoAzure
+import NidoGoogleCloud
+
+enum Subscription: AzureSubscriptionScope {}
+enum Project: GoogleProjectScope {}
+let subscription = Variable<String>("azure_subscription_id")
+let project = Variable<String>("google_project_id")
+let azureName = Variable<String>("azure_storage_name")
+let googleName = Variable<String>("google_bucket_name")
+let azure = AzureProvider(subscriptionID: subscription.value, scope: Subscription.self)
+let google = GoogleProvider(project: project.value, scope: Project.self)
+let group = AzureResourceGroup("app", resourceGroupName: "nido-app", region: JapanEast.self, provider: azure)
+let blob = AzureStorageAccount("objects", accountName: azureName.value, group: group)
+let bucket = GoogleStorageBucket("objects", bucketName: googleName.value, region: AsiaNortheast1.self, provider: google)
+
+try Stack("Azure and Google Cloud") {
+    subscription; project; azureName; googleName
+    azure; google; group; blob; bucket
+}.export()
+```
+
+AzureのNICは同じサブスクリプション・リージョン・VNetのSubnetとNSGを要求し、NSGの関連付けと
+ルールを含めてVMの作成依存関係を生成します。VMはSSH公開鍵認証を使います。
+Google CloudのVPCはグローバルなので、同一の`GoogleNetwork`に異なるリージョンの
+`GoogleSubnetwork`を追加できます。VMのゾーン型はSubnetのリージョン型と一致する必要があります。
+指定したFirewallのターゲットタグとVMのタグは同じ値で生成します。
+
+3クラウドのVM・ネットワーク・ストレージを含む完全な例は
+[Examples/MultiCloud/main.swift](Examples/MultiCloud/main.swift)です。
+
+```sh
+# リポジトリ直下で、認証なしに構成と図を生成
+swift run nido-multicloud-example --nido-output .nido-multicloud
+swift run nido diagram --from .nido-multicloud/nido.graph.json --format svg --output multicloud.svg
+
+# エンジンがプロバイダーを取得し、構成を検証
+swift run nido --product nido-multicloud-example --directory .nido-multicloud init
+swift run nido --product nido-multicloud-example --directory .nido-multicloud validate
+```
+
+plan/applyには各クラウドの認証と、`azure_subscription_id`、`google_project_id`、
+`azure_ssh_public_key`、`azure_storage_name`、`google_bucket_name`、`aws_bucket_name`の変数を設定します。
+AzureはプロバイダーのAzure CLI・環境変数・OIDC認証、Google CloudはADC等の標準認証を使います。
+別のアカウントやプロジェクトには別スコープとprovider aliasを使ってください。
+このサンプルのVMはプライベートIPを使用し、クラウド間のVPNや通信経路は作成しません。
+
+![Multi-cloud architecture](Docs/multicloud-architecture.svg)
+
+既定の構成図でも3クラウドを自動分類します。`Architecture`で`cloud: .azure`などを指定すると、
+概念図のサービスもクラウド別の配色になります。図形はNido独自のもので、公式ロゴではありません。
+専用APIがないサービスは、各プロバイダースキーマからSwift APIを生成して追加できます。
 
 ## コードから構成図を出力する
 
@@ -172,8 +243,8 @@ swift run nido diagram --from .nido-architecture/nido.graph.json --format svg --
 ```
 
 [AWSサンプル](Examples/AWS/main.swift)は実際に宣言したEC2、VPC、Subnetを図示します。
-`architecture:`を省略するとリソースとモジュールの一覧をアイコン付きで表示し、AWSリソースを
-AWS Cloudで囲みます。リージョンや通信経路は自動推測しません。
+`architecture:`を省略するとリソースとモジュールの一覧をアイコン付きで表示し、AWS・Azure・Google Cloudのリソースを
+それぞれのクラウドで囲みます。リージョンや通信経路は自動推測しません。
 
 従来の作成依存関係図も利用できます。
 
@@ -256,7 +327,7 @@ Nidoが更新するのは`main.tf.json`と`nido.graph.json`です。構成生成
 生成ファイルの権限は`0600`です。`.terraform.lock.hcl`はバージョン管理し、stateやプランは除外します。
 
 `Resource`、`Block`、`AnyValue`はプロバイダー実装用の基礎APIです。
-`unsafeExpression`、`unsafeAttribute`、`unsafeOutput`、`InstanceType.unchecked`は型情報を自分で保証する
+`unsafeExpression`、`unsafeAttribute`、`unsafeOutput`、各VMサイズ・イメージの`unchecked`は型情報を自分で保証する
 明示的な拡張用APIです。手書きの式では依存関係も明示してください。これらを利用した部分は、型安全性の保証範囲から外れます。
 
 ## 開発と検証
@@ -264,13 +335,19 @@ Nidoが更新するのは`main.tf.json`と`nido.graph.json`です。構成生成
 ```sh
 swift test --jobs 1
 python3 Scripts/test_compile_failures.py
+python3 Scripts/test_multicloud_compile.py
+python3 Scripts/test_diagrams.py
 python3 Scripts/test_schema.py
 python3 Scripts/test_e2e.py
 NIDO_TEST_ENGINE=tofu python3 Scripts/test_e2e.py
+python3 Scripts/test_multicloud_providers.py
+NIDO_TEST_ENGINE=tofu python3 Scripts/test_multicloud_providers.py
 ```
 
 コンパイル失敗テストでは正常な構成がコンパイルできることを先に確認し、不正な型の組み合わせだけを変更して失敗を検証します。
 E2Eテストでは一時ディレクトリの組み込みリソースだけを使い、クラウド上にはリソースを作成しません。
+互換性テストではAWS 6.0.0・AzureRM 4.0.0・Google 6.0.0の実プロバイダーを取得し、
+同一Stackのvalidate、実スキーマからのSwiftコード生成とコンパイルを行います。
 実際のクラウドへのデプロイは、このテスト範囲には含まれません。
 
 設計と対応範囲は[Docs/design.md](Docs/design.md)を参照してください。

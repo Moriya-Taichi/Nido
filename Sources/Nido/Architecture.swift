@@ -34,29 +34,54 @@ public struct Architecture: Codable, Equatable, Sendable {
 
     static func inferred(_ nodes: [GraphNode]) -> Architecture {
         let resources = nodes.filter { $0.kind == "resource" || $0.kind == "module" }
-        let aws = resources.contains { $0.type.hasPrefix("aws_") }
-        return Architecture(groups: aws ? [.init("aws", label: "AWS Cloud", kind: .cloud)] : [], services: resources.map {
-            .init($0.id, label: $0.name, icon: ServiceIcon.infer($0.type),
-                  parent: $0.type.hasPrefix("aws_") ? "aws" : nil, resource: $0.id, detail: $0.type)
-        })
+        let clouds = Set(resources.compactMap { DiagramCloud.infer($0.type) }).sorted { $0.rawValue < $1.rawValue }
+        var rows: [String: Int] = [:]
+        let services = resources.sorted { $0.id < $1.id }.map { node in
+            let cloud = DiagramCloud.infer(node.type), key = cloud?.rawValue ?? "other"
+            let index = rows[key, default: 0]; rows[key] = index + 1
+            return DiagramService(node.id, label: node.name, icon: ServiceIcon.infer(node.type),
+                                  parent: cloud?.rawValue, resource: node.id, detail: node.type, row: index / 3)
+        }
+        return Architecture(groups: clouds.map { .init($0.rawValue, label: $0.label, kind: .cloud, cloud: $0) }, services: services)
     }
 }
 
-public enum DiagramGroupKind: String, Codable, Sendable { case cloud, region, vpc, availabilityZone, subnet, generic }
+public enum DiagramCloud: String, Codable, Sendable, CaseIterable {
+    case aws, azure, googleCloud
+    public var label: String {
+        switch self { case .aws: "AWS Cloud"; case .azure: "Microsoft Azure"; case .googleCloud: "Google Cloud" }
+    }
+    static func infer(_ type: String) -> Self? {
+        if type.hasPrefix("aws_") { return .aws }
+        if type.hasPrefix("azurerm_") || type.hasPrefix("azuread_") { return .azure }
+        if type.hasPrefix("google_") { return .googleCloud }
+        return nil
+    }
+}
+
+public enum DiagramGroupKind: String, Codable, Sendable { case cloud, region, vpc, availabilityZone, subnet, resourceGroup, project, generic }
 public struct DiagramGroup: Codable, Equatable, Sendable {
     public let id: String
     public let label: String
     public let kind: DiagramGroupKind
+    public let cloud: DiagramCloud?
     public let parent: String?
     /// Siblings with the same row are laid out horizontally. Rows run from top to bottom.
     public let row: Int
-    public init(_ id: String, label: String, kind: DiagramGroupKind = .generic, parent: String? = nil, row: Int = 0) {
+    public init(_ id: String, label: String, kind: DiagramGroupKind = .generic, parent: String? = nil, row: Int = 0, cloud: DiagramCloud? = nil) {
+        self.cloud = cloud
         self.id = id; self.label = label; self.kind = kind; self.parent = parent; self.row = row
     }
 }
 public enum ServiceIcon: String, Codable, Sendable {
     case client, mobile, internet, compute, container, function, database, bucket, loadBalancer, cdn, gateway, security, identity, workflow, generic
     static func infer(_ type: String) -> Self {
+        if type.contains("storage_bucket") || type.contains("storage_account") || type.contains("storage_container") { return .bucket }
+        if type.contains("virtual_machine") || type == "google_compute_instance" { return .compute }
+        if type.contains("firewall") { return .security }
+        if type.contains("cloud_run") || type.contains("container_cluster") || type.contains("kubernetes_cluster") { return .container }
+        if type.contains("cloudfunctions") || type.contains("function_app") { return .function }
+        if type.contains("sql_database") || type.contains("sql_server") || type.contains("sql_database_instance") { return .database }
         if type.contains("s3_bucket") { return .bucket }
         if type.contains("lambda") { return .function }
         if type.contains("cloudfront") { return .cdn }
@@ -206,9 +231,18 @@ extension Architecture {
                 lines.append("<rect x=\"\(lx - width / 2)\" y=\"\(ly - 12)\" width=\"\(width)\" height=\"17\" rx=\"3\" fill=\"white\"/><text x=\"\(lx)\" y=\"\(ly)\" text-anchor=\"middle\" font-size=\"11\">\(xml(label))</text>")
             }
         }
+        func cloud(for service: DiagramService) -> DiagramCloud? {
+            if let resource = service.resource, let cloud = DiagramCloud.infer(resource) { return cloud }
+            var parent = service.parent
+            while let id = parent, let group = groups.first(where: { $0.id == id }) {
+                if let cloud = group.cloud { return cloud }
+                parent = group.parent
+            }
+            return nil
+        }
         for service in services.sorted(by: { $0.id < $1.id }) {
             let b = boxes[service.id]!, cx = b.x + b.w / 2
-            lines.append("<g><title>\(xml(service.resource ?? service.id))</title><g transform=\"translate(\(cx - 36) \(b.y + 10))\">\(symbol(service.icon))</g>")
+            lines.append("<g><title>\(xml(service.resource ?? service.id))</title><g transform=\"translate(\(cx - 36) \(b.y + 10))\">\(symbol(service.icon, cloud: cloud(for: service)))</g>")
             for (offset, value) in [service.label, service.detail].enumerated() {
                 // Long labels wrap rather than expand into neighboring services.
                 let chars = Array(value), count = max(1, (chars.count + 23) / 24)
@@ -224,8 +258,8 @@ extension Architecture {
     }
 
     /// Original geometric symbols. No downloads, external fonts, or proprietary icon bundle required.
-    private func symbol(_ icon: ServiceIcon) -> String {
-        let color: String
+    private func symbol(_ icon: ServiceIcon, cloud: DiagramCloud?) -> String {
+        var color: String
         switch icon {
         case .compute, .container, .function: color = "#ed7d13"
         case .database: color = "#a529c6"
@@ -234,6 +268,8 @@ extension Architecture {
         case .client, .mobile, .internet, .generic: color = "#526477"
         default: color = "#8050d6"
         }
+        if cloud == .azure { color = "#0078d4" }
+        if cloud == .googleCloud { color = icon == .bucket ? "#188038" : "#4285f4" }
         let path: String
         switch icon {
         case .database: path = "<ellipse cx='36' cy='20' rx='21' ry='8'/><path d='M15 20v32c0 11 42 11 42 0V20M15 36c0 11 42 11 42 0'/>"

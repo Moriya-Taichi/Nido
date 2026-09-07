@@ -11,7 +11,8 @@ subprocess.run(['swift', 'build', '--jobs', '2'], cwd=root, check=True)
 bin_dir = Path(subprocess.check_output(['swift', 'build', '--show-bin-path'], cwd=root, text=True).strip())
 with tempfile.TemporaryDirectory() as tmp:
     for product, document in [('nido-aws-example', 'aws-architecture.svg'),
-                              ('nido-architecture-example', 'multi-region-architecture.svg')]:
+                              ('nido-architecture-example', 'multi-region-architecture.svg'),
+                              ('nido-multicloud-example', 'multicloud-architecture.svg')]:
         directory = Path(tmp) / product
         subprocess.run([bin_dir / product, '--nido-output', directory], check=True)
         graph = directory / 'nido.graph.json'
